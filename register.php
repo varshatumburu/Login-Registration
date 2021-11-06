@@ -2,7 +2,7 @@
 include 'config.php';
 
 if (isset($_POST['submit'])) {
-
+	//Save all values given in respective variables 
 	$empid = $_POST['empid'];
 	$doj = $_POST['doj'];
 	$name = $_POST['name'];
@@ -13,22 +13,25 @@ if (isset($_POST['submit'])) {
 	$pwd1 = $_POST['pwd1'];
 	$pwd2 = $_POST['pwd2'];
 
+	//If password does not match confirm password then throw error 
 	if ($pwd1 != $pwd2) {
 		echo "<script>alert('Passwords do not match.')</script>";
 	} else {
+		//Check if user with the same employee id already exists
 		$query = "SELECT * FROM emp where email='$email' or empID='$empid'";
 		$result = mysqli_query($conn, $query);
 		if (mysqli_num_rows($result) > 0) {
 			echo "<script>alert('User already registered. Please login.')</script>";
 		} else {
+			//Insert new employee entry into database 
 			$query = "INSERT INTO emp (empID, passwd, empName, DoJ, salary, department, mobileNo, email) 
 				VALUES ('$empid','$pwd1','$name','$doj','$salary','$dept','$phno','$email')";
 
 			$result = mysqli_query($conn, $query);
+			//If insertion is successful, then redirect to login page else throw error 
 			if ($result) {
 				echo "<script>alert('User registerd!')</script>";
 				header("Location: index.php");
-				echo "<script>alert('User registerd!')</script>";
 			} else {
 				echo "<script>alert('Something went wrong!')</script>";
 			}
