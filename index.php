@@ -3,10 +3,12 @@ require 'config.php';
 if (isset($_POST['submit'])) {
 	$empid = $_POST['emp'];
 	$pwd = $_POST['pass'];
-
+	
+	// select query to check if profile exists 
 	$query = "SELECT * FROM emp WHERE empID='$empid' and passwd='$pwd'";
 	$result = mysqli_query($conn, $query);
-
+	
+	//If there exists a row with the given credentials, then redirect to respective profile page otherwise stay on same page by alert 
 	if (mysqli_num_rows($result) != 0) {
 		session_start();
 		$_SESSION['sess_user'] = $empid;
