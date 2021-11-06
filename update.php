@@ -1,13 +1,18 @@
 <?php
+//Connect to MySQL 
 require 'config.php';
 session_start();
+//If there is no session user, then redirect to login page 
 if (!isset($_SESSION['sess_user'])) {
 	header("location: index.php");
 }
 $empid = $_SESSION['sess_user'];
 if (isset($_POST['submit'])) {
+	//Store entered values in variables 
 	$phno = $_POST['phno'];
 	$email = $_POST['email'];
+	
+	//If any field is left blank, then do not update the attribute. 
 	if ($phno && $email) {
 		$result = mysqli_query($conn, "UPDATE emp SET mobileNo=$phno, email='$email' WHERE empID='$empid'");
 		if ($result) {
