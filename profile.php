@@ -1,12 +1,18 @@
 <?php
+//Connect to MySQL server 
 require 'config.php';
 session_start();
+
+//If there is no session user, then redirect to login page 
 if (!isset($_SESSION['sess_user'])) {
 	header("location: index.php");
 }
+
+//Find various fields for an employee and save them in variables for display purposes 
 $empid = $_SESSION['sess_user'];
 $result = mysqli_query($conn, "SELECT * FROM emp WHERE empID='$empid'");
 $row = mysqli_fetch_array($result);
+
 $name = $row["empName"];
 $dept = $row["department"];
 $sal = $row["salary"];
