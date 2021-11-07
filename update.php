@@ -2,43 +2,54 @@
 //Connect to MySQL 
 require 'config.php';
 session_start();
+
 //If there is no session user, then redirect to login page 
 if (!isset($_SESSION['sess_user'])) {
 	header("location: index.php");
 }
 $empid = $_SESSION['sess_user'];
 if (isset($_POST['submit'])) {
+
 	//Store entered values in variables 
 	$phno = $_POST['phno'];
 	$email = $_POST['email'];
-	
-	//If any field is left blank, then do not update the attribute. 
-	if ($phno && $email) {
-		$result = mysqli_query($conn, "UPDATE emp SET mobileNo=$phno, email='$email' WHERE empID='$empid'");
-		if ($result) {
-			echo "<script>alert('Profile updated!')</script>";
-			header("Location: profile.php");
+	$pwd = $_POST['pass'];
+
+	//Check credentials with password and proceed 
+	$query = "SELECT * FROM emp WHERE empID='$empid' AND passwd='$pwd'";
+	$result = mysqli_query($conn, $query);
+	if (mysqli_num_rows($result) != 0) {
+
+		//If any field is left blank, then do not update the attribute. 
+		if ($phno && $email) {
+			$result = mysqli_query($conn, "UPDATE emp SET mobileNo=$phno, email='$email' WHERE empID='$empid'");
+			if ($result) {
+				echo "<script>alert('Profile updated!')</script>";
+				header("Location: profile.php");
+			} else {
+				echo "<script>alert('Something went wrong.')</script>";
+			}
+		} else if ($phno) {
+			$result = mysqli_query($conn, "UPDATE emp SET mobileNo=$phno WHERE empID='$empid'");
+			if ($result) {
+				echo "<script>alert('Profile updated!')</script>";
+				header("Location: profile.php");
+			} else {
+				echo "<script>alert('Something went wrong.')</script>";
+			}
+		} else if ($email) {
+			$result = mysqli_query($conn, "UPDATE emp SET email='$email' WHERE empID='$empid'");
+			if ($result) {
+				echo "<script>alert('Profile updated!')</script>";
+				header("Location: profile.php");
+			} else {
+				echo "<script>alert('Something went wrong.')</script>";
+			}
 		} else {
-			echo "<script>alert('Something went wrong.')</script>";
-		}
-	} else if ($phno) {
-		$result = mysqli_query($conn, "UPDATE emp SET mobileNo=$phno WHERE empID='$empid'");
-		if ($result) {
-			echo "<script>alert('Profile updated!')</script>";
-			header("Location: profile.php");
-		} else {
-			echo "<script>alert('Something went wrong.')</script>";
-		}
-	} else if ($email) {
-		$result = mysqli_query($conn, "UPDATE emp SET email='$email' WHERE empID='$empid'");
-		if ($result) {
-			echo "<script>alert('Profile updated!')</script>";
-			header("Location: profile.php");
-		} else {
-			echo "<script>alert('Something went wrong.')</script>";
+			echo "<script>alert('Atleast one field required.')</script>";
 		}
 	} else {
-		echo "<script>alert('Atleast one field required.')</script>";
+		echo "<script>alert('Wrong password.')</script>";
 	}
 }
 ?>
@@ -73,6 +84,13 @@ if (isset($_POST['submit'])) {
 							<label class="col-sm-3 col-form-label" for="eid">Employee ID</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" name="EmpID" id="eid" value="<?php echo $empid; ?>" disabled />
+							</div>
+						</div>
+						<br />
+						<div class="row mb-3">
+							<label for="pwd" class="col-sm-3 col-form-label">Password</label>
+							<div class="col-sm-9">
+								<input type="password" class="form-control" id="pwd" name="pass" required />
 							</div>
 						</div>
 						<br />
